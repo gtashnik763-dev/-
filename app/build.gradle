@@ -1,1 +1,13 @@
+plugins { id 'com.android.application' }
 
+android {
+    namespace 'ua.virazh.ppo'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'ua.virazh.ppo'
+        minSdk 23
+        targetSdk 28
+        versionCode 1
+        versionName '1.0'
+    }
+}
