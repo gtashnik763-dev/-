@@ -1532,7 +1532,7 @@ const settings = {
     showFlightTrails: true,
     glow: false,
     showHpBars: false,
-    sizeMultiplier: 0.3,
+    sizeMultiplier: 0.5,
     showPvoRadius: false,
     showPvoFill: false,
     zrvObjectDisplayMode: 'triangles',
@@ -2388,19 +2388,30 @@ function rememberPP2TrackPoint(obj, latlng) {
     pts.push(loc);
     if (pts.length > 6000) pts.splice(0, pts.length - 6000);
 
-    // Fix a trail dot every five seconds, independent of heading changes.
-    // The whole traveled path is still kept in _pp2TrackHistory.
+    // Dots are fixed only at meaningful turns, not every five seconds.
+    // Compare the direction of travel over a short distance to avoid
+    // placing dots due to tiny position updates / GPS jitter.
     if (!obj._pp2BendPoints) obj._pp2BendPoints = [];
-    const now = Date.now();
-    if (!Number.isFinite(obj._pp2LastDotAt)) {
-        obj._pp2LastDotAt = now;
+    if (!obj._pp2SegmentAnchor) obj._pp2SegmentAnchor = pts[0];
+    const anchor = obj._pp2SegmentAnchor;
+    const segmentMeters = anchor.distanceTo(loc);
+    if (segmentMeters < 35) return;
+    const direction = pp2Bearing(anchor, loc);
+    if (!Number.isFinite(obj._pp2SegmentHeading)) {
+        obj._pp2SegmentHeading = direction;
         return;
     }
-    if (now - obj._pp2LastDotAt >= 5000) {
-        obj._pp2BendPoints.push(L.latLng(loc));
+    const turn = pp2AngleDifference(direction, obj._pp2SegmentHeading);
+    const prior = pts.length >= 2 ? pts[pts.length - 2] : anchor;
+    const lastBend = obj._pp2BendPoints.length ? obj._pp2BendPoints[obj._pp2BendPoints.length - 1] : anchor;
+    if (turn >= 15 && lastBend.distanceTo(prior) >= 35) {
+        // Lock the dot to the corner; the next segment continues normally.
+        obj._pp2BendPoints.push(L.latLng(prior));
         if (obj._pp2BendPoints.length > 500) obj._pp2BendPoints.shift();
-        obj._pp2LastDotAt = now;
+        obj._pp2SegmentAnchor = L.latLng(prior);
+        obj._pp2SegmentHeading = pp2Bearing(prior, loc);
     }
+
 }
 function updatePP2PastTrail(obj) {
     if (!obj) return;
