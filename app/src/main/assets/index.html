@@ -251,8 +251,8 @@ button:disabled { opacity: 0.35; cursor: not-allowed; }
     object-fit: contain; overflow: visible;
     pointer-events: none; user-select: none;
     filter:
-        drop-shadow(0 0 4px rgba(255, 40, 40, 0.9))
-        drop-shadow(0 0 8px rgba(255, 0, 0, 0.6));
+        drop-shadow(0 0 4px rgba(207, 1, 75, 0.9))
+        drop-shadow(0 0 8px rgba(207, 1, 75, 0.6));
 }
 body.no-glow .uavIcon img, body.icon-style-2 .uavIcon img { filter: none !important; }
 
@@ -288,7 +288,7 @@ body.no-glow .pvo-icon img, body.icon-style-2 .pvo-icon img { filter: none !impo
     width: 28px;
     height: 28px;
     display: block;
-    background: var(--obj-color, #d90047);
+    background: #cf014b !important;
     -webkit-mask-repeat: no-repeat;
     mask-repeat: no-repeat;
     -webkit-mask-position: center;
@@ -296,8 +296,8 @@ body.no-glow .pvo-icon img, body.icon-style-2 .pvo-icon img { filter: none !impo
     -webkit-mask-size: contain;
     mask-size: contain;
     filter:
-        drop-shadow(0 0 4px var(--obj-glow-1, rgba(215, 1, 71, 0.95)))
-        drop-shadow(0 0 10px var(--obj-glow-2, rgba(215, 1, 71, 0.70)));
+        drop-shadow(0 0 4px var(--obj-glow-1, rgba(207, 1, 75, 0.95)))
+        drop-shadow(0 0 10px var(--obj-glow-2, rgba(207, 1, 75, 0.70)));
 }
 body.no-glow .uavIcon .object-icon-shape,
 body.no-glow .pvo-icon .object-icon-shape {
@@ -307,7 +307,7 @@ body.no-glow .pvo-icon .object-icon-shape {
 .obj-name-label {
     position: absolute;
     pointer-events: none;
-    color: #e30613;
+    color: #cf014b;
     font: bold 12px Arial;
     white-space: nowrap;
     transform: translate(35px, -35px);
@@ -317,7 +317,7 @@ body.no-glow .pvo-icon .object-icon-shape {
 .obj-detail-label {
     position: absolute;
     pointer-events: none;
-    color: #e30613;
+    color: #cf014b;
     font: bold 11px Arial;
     white-space: nowrap;
     transform: translate(35px, -42px);
@@ -338,14 +338,14 @@ body.no-glow .pvo-icon .object-icon-shape {
     transform: translate(34px, -30px);
     z-index: 600;
     line-height: 1.5;
-    color: #e30613;
+    color: #cf014b;
     text-shadow: 0 0 4px rgba(0,0,0,.5);
 }
 .target-block-label .tbl-num,
 .target-block-label .tbl-type,
 .target-block-label .tbl-code {
     display: block;
-    color: #e30613;
+    color: #cf014b;
     font-family: 'Press Start 2P', 'VT323', monospace;
     font-weight: normal;
     letter-spacing: 0;
@@ -395,7 +395,7 @@ body.no-glow .pvo-icon .object-icon-shape {
 .hitbox-square {
     position: absolute; left: -25px; top: -45px;
     width: 50px; height: 90px;
-    border: 1.5px solid #e30613;
+    border: 1.5px solid #cf014b;
     box-sizing: border-box;
     pointer-events: none;
     box-shadow: 0 0 3px rgba(227,6,19,.35);
@@ -687,7 +687,7 @@ body:not(.no-glow) .uavIcon img,
 body:not(.no-glow) .uavIcon .object-icon-shape,
 body:not(.no-glow) .s300-arcade-rocket img,
 body:not(.no-glow) .s300-arcade-rocket .object-icon-shape {
- filter: drop-shadow(0 0 4px rgba(217,0,71,.92)) drop-shadow(0 0 9px rgba(217,0,71,.60)) !important;
+ filter: drop-shadow(0 0 4px rgba(207,1,75,.92)) drop-shadow(0 0 9px rgba(207,1,75,.60)) !important;
 }
 body:not(.no-glow) .pvo-icon img,
 body:not(.no-glow) .pvo-icon .object-icon-shape {
@@ -697,14 +697,139 @@ body.no-glow .uavIcon img, body.no-glow .pvo-icon img,
 body.no-glow .uavIcon .object-icon-shape,body.no-glow .pvo-icon .object-icon-shape,
 body.no-glow .s300-arcade-rocket img,body.no-glow .s300-arcade-rocket .object-icon-shape { filter:none!important; }
 /* SVG-перекраска стиля #1. Свечение применяется к целой форме. */
+body:not(.no-glow) .uavIcon .object-solid-svg, body:not(.no-glow) .s300-arcade-rocket .object-solid-svg { filter: none !important; }
+body:not(.no-glow) .pvo-icon .object-solid-svg { filter: none !important; }
+body.no-glow .object-solid-svg { filter: none !important; }
+
+
+/* Контур в SVG — без CSS drop-shadow */
+.uavIcon .object-solid-svg,
+.pvo-icon .object-solid-svg,
+.s300-arcade-rocket .object-solid-svg,
+body.no-glow .uavIcon .object-solid-svg,
+body.no-glow .pvo-icon .object-solid-svg,
 body:not(.no-glow) .uavIcon .object-solid-svg,
-body:not(.no-glow) .s300-arcade-rocket .object-solid-svg {
- filter:drop-shadow(0 0 4px rgba(217,0,71,.9)) drop-shadow(0 0 8px rgba(217,0,71,.5)) !important;
+body:not(.no-glow) .pvo-icon .object-solid-svg,
+body:not(.no-glow) .s300-arcade-rocket .object-solid-svg,
+body.icon-style-2 .uavIcon .object-solid-svg,
+body.icon-style-2 .pvo-icon .object-solid-svg,
+body.no-glow .object-solid-svg {
+  filter: none !important;
 }
+
+
+/* Три зелёные полоски гуськом под объектом (как на фото, но три) */
+.object-stripes{
+  position:absolute!important;
+  left:50%!important;
+  top:calc(100% + 2px)!important;
+  transform:translateX(-50%)!important;
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:3px!important;
+  width:auto!important;
+  height:auto!important;
+  padding:0!important;
+  margin:0!important;
+  pointer-events:none!important;
+  z-index:6!important;
+  background:transparent!important;
+  border:0!important;
+}
+.object-stripes i{
+  display:block!important;
+  width:16px!important;
+  height:2.5px!important;
+  background:#3DFF6A!important;
+  border:0!important;
+  border-radius:1px!important;
+  margin:0!important;
+  padding:0!important;
+  opacity:1!important;
+  box-shadow:none!important;
+}
+
+/* Готовый силуэт с контуром — без CSS filter (рамки/рваный край) */
+.uavIcon img.object-solid-img,
+.pvo-icon img.object-solid-img,
+.s300-arcade-rocket img.object-solid-img,
+.uavIcon .object-solid-svg,
+.pvo-icon .object-solid-svg,
+body.no-glow .uavIcon img.object-solid-img,
+body.no-glow .pvo-icon img.object-solid-img,
+body:not(.no-glow) .uavIcon img.object-solid-img,
+body:not(.no-glow) .pvo-icon img.object-solid-img,
+body.icon-style-2 .uavIcon img.object-solid-img,
+body.icon-style-2 .pvo-icon img.object-solid-img {
+  filter: none !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+body.hide-object-stripes .object-stripes{display:none!important}
+.uavIcon,.pvo-icon{overflow:visible!important}
+
+/* Контур рисуется в SVG-фильтре — CSS filter не трогаем (иначе толщина пляшет) */
+.uavIcon .object-solid-svg,
+.pvo-icon .object-solid-svg,
+.s300-arcade-rocket .object-solid-svg {
+  filter: none !important;
+}
+
+
+
+/* Контур в SVG filter — CSS не добавляет тень */
+.uavIcon .object-solid-svg,
+.pvo-icon .object-solid-svg,
+.s300-arcade-rocket .object-solid-svg {
+  filter: none !important;
+}
+
+
+/* thin object outline — тонкий контур у каждого объекта */
+.uavIcon img,
+.uavIcon .object-solid-svg,
+.uavIcon .object-icon-shape,
+.pvo-icon img,
+.pvo-icon .object-solid-svg,
+.pvo-icon .object-icon-shape,
+.s300-arcade-rocket img,
+.s300-arcade-rocket .object-solid-svg,
+.s300-arcade-rocket .object-icon-shape,
+.demo-blue-aircraft img {
+  --obj-outline: drop-shadow(0 0.15px 0 #000) drop-shadow(0 -0.15px 0 #000) drop-shadow(0.15px 0 0 #000) drop-shadow(-0.15px 0 0 #000);
+}
+body.no-glow .uavIcon img,
+body.no-glow .uavIcon .object-solid-svg,
+body.no-glow .uavIcon .object-icon-shape,
+body.no-glow .pvo-icon img,
+body.no-glow .pvo-icon .object-solid-svg,
+body.no-glow .pvo-icon .object-icon-shape,
+body.no-glow .s300-arcade-rocket img,
+body.no-glow .s300-arcade-rocket .object-solid-svg,
+body.no-glow .s300-arcade-rocket .object-icon-shape,
+body.icon-style-2 .uavIcon img,
+body.icon-style-2 .pvo-icon img,
+.demo-blue-aircraft img {
+  filter: var(--obj-outline) !important;
+}
+body:not(.no-glow) .uavIcon img,
+body:not(.no-glow) .uavIcon .object-icon-shape,
+body:not(.no-glow) .uavIcon .object-solid-svg,
+body:not(.no-glow) .s300-arcade-rocket img,
+body:not(.no-glow) .s300-arcade-rocket .object-icon-shape,
+body:not(.no-glow) .s300-arcade-rocket .object-solid-svg { filter: drop-shadow(0 0.4px 0 #000) drop-shadow(0 -0.4px 0 #000) drop-shadow(0.4px 0 0 #000) drop-shadow(-0.4px 0 0 #000) !important;
+}
+body:not(.no-glow) .pvo-icon img,
+body:not(.no-glow) .pvo-icon .object-icon-shape,
 body:not(.no-glow) .pvo-icon .object-solid-svg {
- filter:drop-shadow(0 0 4px rgba(70,170,255,.85)) drop-shadow(0 0 8px rgba(70,170,255,.5)) !important;
+  filter: drop-shadow(0 0.4px 0 #000) drop-shadow(0 -0.4px 0 #000) drop-shadow(0.4px 0 0 #000) drop-shadow(-0.4px 0 0 #000) !important;
 }
-body.no-glow .object-solid-svg {filter:none!important;}
+
 /* Встроенная иконка баллистики при ручном перехвате. */
 .s300-arcade-rocket {width:76px!important;height:76px!important;background:transparent!important;border:0!important;overflow:visible!important;pointer-events:none!important}
 .s300-arcade-rocket .s300-rocket-rotate {width:76px;height:76px;display:flex;align-items:center;justify-content:center;transform-origin:38px 38px;}
@@ -712,7 +837,7 @@ body.no-glow .object-solid-svg {filter:none!important;}
 /* Баллистика С-300: отображать цветную маску даже вне класса uavIcon. */
 .s300-arcade-rocket .object-icon-shape {
  display:block!important;flex:none!important;width:76px!important;height:76px!important;
- background:var(--obj-color,#d90047)!important;
+ background:var(--obj-color, #cf014b)!important;
  -webkit-mask-repeat:no-repeat!important;mask-repeat:no-repeat!important;
  -webkit-mask-position:center!important;mask-position:center!important;
  -webkit-mask-size:contain!important;mask-size:contain!important;
@@ -1014,8 +1139,8 @@ body.no-glow .object-solid-svg {filter:none!important;}
 
 /* ЗРВ: самостоятельные отметки целей без импорта пуль/эффектов. */
 .zrv-track-icon-wrap{width:18px;height:18px;display:block;pointer-events:none;}
-.zrv-track-icon{width:18px;height:18px;background:#d90047;clip-path:polygon(50% 3%, 8% 97%, 92% 97%);box-sizing:border-box;border:1px solid #2b000d;filter:drop-shadow(0 0 0.8px #f0f0eb);transform-origin:50% 58%;}
-.zrv-track-icon.zrv-pvo-missile{background:#d90047;border-color:#42000f;}
+.zrv-track-icon{width:18px;height:18px;background:#cf014b;clip-path:polygon(50% 3%, 8% 97%, 92% 97%);box-sizing:border-box;border:1px solid #2b000d;filter:drop-shadow(0 0 0.8px #f0f0eb);transform-origin:50% 58%;}
+.zrv-track-icon.zrv-pvo-missile{background:#cf014b;border-color:#42000f;}
 .zrv-track-label{font:bold 11px/1.2 Arial,sans-serif;white-space:nowrap;color:#101010;background:rgba(238,238,232,.88);border:1px solid #666;padding:2px 3px;pointer-events:none;}
 
 /* ЗРВ: красная экранная символика, без серых плашек */
@@ -1174,6 +1299,25 @@ html.rubezh-manual-landscape #rubezhFloatingDock {
 .game-course-marker.passed{background:#df4343;box-shadow:0 0 0 1px #963232}
 .game-course-time{background:rgba(235,236,226,.91);border-radius:2px;color:#6f3535;font:11px/1.25 Arial,sans-serif;padding:2px 5px;white-space:nowrap;box-shadow:0 1px 2px #0003}
 </style><style id="hideEmptyBottomToolbar">#panel{display:none!important;visibility:hidden!important;pointer-events:none!important}</style>
+
+<style id="api-live-marker-outline-final">
+/* API live markers: preserve a visible dark contour even when glow is disabled. */
+.leaflet-marker-icon.uavIcon img.object-solid-img,
+.leaflet-marker-icon.pvo-icon img.object-solid-img,
+.leaflet-marker-icon.uavIcon img,
+.leaflet-marker-icon.pvo-icon img {
+  filter:
+    drop-shadow( 1px  0   0 #050505)
+    drop-shadow(-1px  0   0 #050505)
+    drop-shadow( 0    1px 0 #050505)
+    drop-shadow( 0   -1px 0 #050505)
+    drop-shadow(.7px .7px 0 #050505)
+    drop-shadow(-.7px .7px 0 #050505)
+    drop-shadow(.7px -.7px 0 #050505)
+    drop-shadow(-.7px -.7px 0 #050505) !important;
+}
+</style>
+
 </head>
 <body>
 
@@ -1271,9 +1415,13 @@ html.rubezh-manual-landscape #rubezhFloatingDock {
             <label>Следы от объектов</label>
             <div id="toggleFlightTrails" class="toggle-switch on"></div>
         </div>
+        <div class="settings-row">
+            <label>Полоски под объектами</label>
+            <div id="toggleObjectStripes" class="toggle-switch on"></div>
+        </div>
         <div class="settings-row" style="display:none">
             <label>Показывать HP объектов</label>
-            <div id="toggleHpBars" class="toggle-switch on"></div>
+            <div id="toggleHpBars" class="toggle-switch"></div>
         </div>
         <div class="settings-row" style="display:none">
             <label>Свечение объектов (GLOW)</label>
@@ -1329,7 +1477,7 @@ html.rubezh-manual-landscape #rubezhFloatingDock {
 <div class="settings-group" id="objectColorGroup" style="display:none">
         <h4>Цвет объектов</h4>
         <div class="arrow-color-row" id="objectColorRow">
-            <div class="arrow-color-swatch active" data-color="#d90047" style="background:#d90047;"></div>
+            <div class="arrow-color-swatch active" data-color="#cf014b" style="background:#cf014b;"></div>
             <div class="arrow-color-swatch" data-color="#f7181b" style="background:#f7181b;"></div>
         </div>
     </div>
@@ -1421,6 +1569,21 @@ html.rubezh-manual-landscape #rubezhFloatingDock {
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.20/leaflet-maplibre-gl.js"></script>
+<script>
+(function(){
+  function showBootError(msg){
+    try{
+      var el=document.createElement('div');
+      el.setAttribute('style','position:fixed;z-index:2147483647;left:12px;right:12px;top:12px;padding:12px 14px;background:#7a1c1c;color:#fff;font:14px Arial,sans-serif;border-radius:10px;box-shadow:0 6px 20px #0008');
+      el.textContent=msg;
+      document.body.appendChild(el);
+    }catch(e){}
+  }
+  if(typeof L==='undefined'){
+    showBootError('Карта не загрузилась: нет Leaflet. Проверьте интернет / блокировку CDN (unpkg).');
+  }
+})();
+</script>
 
 <script>
 // ============================================================
@@ -1543,12 +1706,13 @@ const settings = {
     showFlightTrails: true,
     glow: false,
     showHpBars: false,
+    showObjectStripes: true,
     sizeMultiplier: 1.0,
     showPvoRadius: false,
     showPvoFill: false,
     zrvObjectDisplayMode: 'triangles',
     pvoActive: false,
-    objectColor: "#d90047",
+    objectColor: "#cf014b",
     iconStyle: 1,
     arrowColor: "#ff6a00",
     aviacontrolLive: true,
@@ -1846,31 +2010,59 @@ function setMapLayer(key) {
     if (currentLabelsLayer) { map.removeLayer(currentLabelsLayer); currentLabelsLayer = null; }
 
     if (VECTOR_STYLES[key]) {
-        const v = VECTOR_STYLES[key];
-        currentVectorLayer = L.maplibreGL({ style: v.style, attribution: v.attr }).addTo(map);
-        currentMapKey = key;
-        renderCities();
-        setTimeout(() => updateMilitaryUrbanHighlight(true), 900);
-        setTimeout(() => updateMilitaryUrbanHighlight(true), 2600);
-        return;
+        try {
+            if (typeof L.maplibreGL !== 'function' || typeof maplibregl === 'undefined') {
+                throw new Error('MapLibre unavailable');
+            }
+            const v = VECTOR_STYLES[key];
+            currentVectorLayer = L.maplibreGL({ style: v.style, attribution: v.attr }).addTo(map);
+            currentMapKey = key;
+            renderCities();
+            setTimeout(function() { updateMilitaryUrbanHighlight(true); }, 900);
+            setTimeout(function() { updateMilitaryUrbanHighlight(true); }, 2600);
+            return;
+        } catch (err) {
+            // WebGL/MapLibre недоступен на части устройств — откат на растровую карту
+            key = 'osm';
+        }
     }
-    
-    const t = RASTER_TILES[key] || RASTER_TILES.esri_light_gray;
-    const opts = { maxZoom: t.maxZoom || 19, crossOrigin: true, attribution: t.attr || '' };
+
+    const t = RASTER_TILES[key] || RASTER_TILES.osm || RASTER_TILES.esri_light_gray;
+    const opts = { maxZoom: t.maxZoom || 19, crossOrigin: true, attribution: t.attr || '', errorTileUrl: '' };
     if (t.subdomains) opts.subdomains = t.subdomains;
-    if (t.url.indexOf("{r}") !== -1) opts.detectRetina = true;
-    currentTileLayer = L.tileLayer(t.url, opts);
-    currentTileLayer.addTo(map);
-    
-    if (t.labelsUrl) {
-        currentLabelsLayer = L.tileLayer(t.labelsUrl, {
-            maxZoom: t.maxZoom || 19,
-            crossOrigin: true,
-            attribution: t.attr || ''
+    if (t.url && t.url.indexOf('{r}') !== -1) opts.detectRetina = true;
+    try {
+        currentTileLayer = L.tileLayer(t.url, opts);
+        currentTileLayer.on('tileerror', function() {
+            // тихий фолбэк: если OSM режется, пробуем Carto
+            if (currentMapKey === 'osm' && RASTER_TILES.carto_light) {
+                try {
+                    map.removeLayer(currentTileLayer);
+                    const c = RASTER_TILES.carto_light;
+                    currentTileLayer = L.tileLayer(c.url, { maxZoom: c.maxZoom || 19, crossOrigin: true, attribution: c.attr || '', subdomains: c.subdomains });
+                    currentTileLayer.addTo(map);
+                    currentMapKey = 'carto_light';
+                } catch (e2) {}
+            }
         });
-        currentLabelsLayer.addTo(map);
+        currentTileLayer.addTo(map);
+    } catch (e) {
+        try {
+            currentTileLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; OSM' }).addTo(map);
+        } catch (e3) {}
     }
-    
+
+    if (t.labelsUrl) {
+        try {
+            currentLabelsLayer = L.tileLayer(t.labelsUrl, {
+                maxZoom: t.maxZoom || 19,
+                crossOrigin: true,
+                attribution: t.attr || ''
+            });
+            currentLabelsLayer.addTo(map);
+        } catch (e) {}
+    }
+
     currentMapKey = key;
     renderCities();
 }
@@ -2151,6 +2343,29 @@ toggleTrajectoryLines.onclick = function() {
     updateTrajectoryVisibility();
 };
 
+const toggleObjectStripes = document.getElementById("toggleObjectStripes");
+if (toggleObjectStripes) {
+    toggleObjectStripes.classList.toggle("on", settings.showObjectStripes !== false);
+    document.body.classList.toggle("hide-object-stripes", settings.showObjectStripes === false);
+    toggleObjectStripes.onclick = function() {
+        settings.showObjectStripes = !settings.showObjectStripes;
+        toggleObjectStripes.classList.toggle("on", settings.showObjectStripes);
+        document.body.classList.toggle("hide-object-stripes", !settings.showObjectStripes);
+        if (typeof updateAllObjectIcons === "function") updateAllObjectIcons();
+        // live flyers
+        try {
+            if (window.__rubezhLiveFlyers) {
+                window.__rubezhLiveFlyers.forEach(function(f) {
+                    if (f && f.marker && f.template && typeof makeIcon === "function") {
+                        f.marker.setIcon(makeIcon(f.template, f.angle || 0));
+                    } else if (f && f.marker && f.template && typeof createObjectIconByTemplate === "function") {
+                        f.marker.setIcon(createObjectIconByTemplate(f.template, f.angle || 0, false));
+                    }
+                });
+            }
+        } catch (e) {}
+    };
+}
 const toggleHpBars = document.getElementById("toggleHpBars");
 toggleHpBars.onclick = function() {
     settings.showHpBars = !settings.showHpBars;
@@ -2752,7 +2967,7 @@ document.getElementById("spawnClose").onclick = function() {
 };
 
 function hexToRgba(hex, alpha) {
-    if (!hex) return 'rgba(217,0,71,' + alpha + ')';
+    if (!hex) return 'rgba(207,1,75,' + alpha + ')';
     const clean = hex.replace('#', '');
     const full = clean.length === 3
         ? clean.split('').map(function(ch) { return ch + ch; }).join('')
@@ -2768,33 +2983,154 @@ function hexToRgba(hex, alpha) {
 // Так работают и внешние PNG, и длинные встроенные WebP (data:image/...)
 let solidIconSerial = 0;
 const FIXED_ICON_PX = 28;
-function buildSolidObjectShape(tpl, overrideColor, forceStyle1 = false) {
-    // Единый оттенок всех моделей, независимо от сохраненных настроек цвета.
+
+
+// Кэш: картинка → PNG со сплошной заливкой и ровным контуром (без SVG-фильтров)
+const __solidSilhouetteCache = new Map();
+const __solidSilhouettePending = new Map();
+function __paintSolidWithOutline(srcImg, color, outlinePx) {
+  // Всегда обрабатываем небольшую копию изображения, а не исходник
+  // API в полном разрешении: прежний алгоритм мог зависать на больших PNG.
+  const contentSize = 56; // 2x от отображаемых 28 px
+  const rad = 2;           // примерно 1 px после уменьшения до 28 px
+  const pad = rad + 2;
+  const c = document.createElement('canvas');
+  c.width = contentSize + pad * 2;
+  c.height = contentSize + pad * 2;
+  const ctx = c.getContext('2d', { willReadFrequently: true });
+  if (!ctx) throw new Error('Canvas 2D context unavailable');
+
+  const sw = Math.max(1, srcImg.naturalWidth || srcImg.width || 1);
+  const sh = Math.max(1, srcImg.naturalHeight || srcImg.height || 1);
+  const scale = Math.min(contentSize / sw, contentSize / sh);
+  const dw = Math.max(1, Math.round(sw * scale));
+  const dh = Math.max(1, Math.round(sh * scale));
+  const dx = pad + Math.floor((contentSize - dw) / 2);
+  const dy = pad + Math.floor((contentSize - dh) / 2);
+  ctx.clearRect(0, 0, c.width, c.height);
+  ctx.drawImage(srcImg, dx, dy, dw, dh);
+
+  const imgData = ctx.getImageData(0, 0, c.width, c.height);
+  const px = imgData.data;
+  const total = c.width * c.height;
+  const mask = new Uint8Array(total);
+  for (let i = 0, p = 3; i < total; i++, p += 4) {
+    mask[i] = px[p] > 28 ? 1 : 0;
+  }
+
+  const hex = String(color || '#cf014b').replace('#', '');
+  const full = hex.length === 3
+    ? hex.split('').map(function(ch) { return ch + ch; }).join('')
+    : hex;
+  const R = parseInt(full.slice(0, 2), 16) || 207;
+  const G = parseInt(full.slice(2, 4), 16) || 1;
+  const B = parseInt(full.slice(4, 6), 16) || 75;
+
+  const outData = ctx.createImageData(c.width, c.height);
+  const op = outData.data;
+  const wdt = c.width;
+  const r2 = rad * rad;
+
+  for (let y = 0; y < c.height; y++) {
+    for (let x = 0; x < wdt; x++) {
+      const i = y * wdt + x;
+      const p = i * 4;
+      if (mask[i]) {
+        op[p] = R; op[p + 1] = G; op[p + 2] = B; op[p + 3] = 255;
+        continue;
+      }
+      let near = false;
+      for (let dy2 = -rad; dy2 <= rad && !near; dy2++) {
+        const yy = y + dy2;
+        if (yy < 0 || yy >= c.height) continue;
+        for (let dx2 = -rad; dx2 <= rad; dx2++) {
+          if (dx2 * dx2 + dy2 * dy2 > r2) continue;
+          const xx = x + dx2;
+          if (xx >= 0 && xx < wdt && mask[yy * wdt + xx]) {
+            near = true;
+            break;
+          }
+        }
+      }
+      if (near) {
+        op[p] = 5; op[p + 1] = 5; op[p + 2] = 5; op[p + 3] = 255;
+      }
+    }
+  }
+  ctx.putImageData(outData, 0, 0);
+  return c.toDataURL('image/png');
+}
+function __requestSolidSilhouette(src, color, done) {
+  if (!src) return;
+  const key = src + '|' + (color || '#cf014b') + '|v3';
+  if (__solidSilhouetteCache.has(key)) { done(__solidSilhouetteCache.get(key)); return; }
+  if (__solidSilhouettePending.has(key)) { __solidSilhouettePending.get(key).push(done); return; }
+  __solidSilhouettePending.set(key, [done]);
+  const img = new Image();
+  try { img.crossOrigin = 'anonymous'; } catch (e) {}
+  img.onload = function() {
+    let url = null;
+    try {
+      // Обводка строится на уменьшенной копии; большие API-изображения
+      // больше не блокируют обработку перемещения карты и нажатий.
+      url = __paintSolidWithOutline(img, color || '#cf014b', 2);
+    } catch (e) { url = null; }
+    if (url) __solidSilhouetteCache.set(key, url);
+    const cbs = __solidSilhouettePending.get(key) || [];
+    __solidSilhouettePending.delete(key);
+    cbs.forEach(function(cb) { try { if (url) cb(url); } catch (e) {} });
+  };
+  img.onerror = function() {
+    __solidSilhouettePending.delete(key);
+  };
+  img.src = src;
+}
+
+function buildSolidObjectShape(tpl, overrideColor, forceStyle1) {
+    if (forceStyle1 == null) forceStyle1 = false;
     const imageSource = (!forceStyle1 && settings.iconStyle === 2 && STYLE2_IMAGES[tpl.id])
         ? STYLE2_IMAGES[tpl.id] : tpl.img;
-    const color = '#d90047';
-    const id = 'solid-icon-' + (++solidIconSerial);
-    // Фильтр оставляет исходную прозрачность, окрашивая непрозрачные пиксели.
+    const color = (overrideColor && String(overrideColor)) || '#cf014b';
     const iconPx = (typeof FIXED_ICON_PX === 'number' ? FIXED_ICON_PX : 28);
-    return '<svg class="object-solid-svg" xmlns="http://www.w3.org/2000/svg" width="' + iconPx + '" height="' + iconPx + '" viewBox="0 0 76 76" aria-hidden="true" style="width:' + iconPx + 'px;height:' + iconPx + 'px;display:block;overflow:visible">' +
-        '<defs><filter id="' + id + '" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">' +
-        '<feFlood flood-color="' + color + '" result="flat"/>' +
-        '<feComposite in="flat" in2="SourceAlpha" operator="in"/>' +
-        '</filter></defs>' +
-        '<image href="' + imageSource + '" x="0" y="0" width="76" height="76" preserveAspectRatio="xMidYMid meet" filter="url(#' + id + ')"/>' +
-        '</svg>';
+    const src = String(imageSource || '');
+    const key = src + '|' + color + '|v3';
+    const cached = __solidSilhouetteCache.has(key) ? __solidSilhouetteCache.get(key) : null;
+    const id = 'solid-icon-' + (++solidIconSerial);
+    if (!cached && src) {
+      __requestSolidSilhouette(src, color, function(url) {
+        try {
+          document.querySelectorAll('img[data-solid-key="' + id + '"]').forEach(function(node) {
+            node.src = url;
+            node.style.opacity = '1';
+          });
+        } catch (e) {}
+      });
+    }
+    // Просто готовый PNG: заливка одним цветом + ровный чёрный контур. Без SVG-фильтров.
+    const href = cached || src;
+    return '<img class="object-solid-svg object-solid-img" data-solid-key="' + id + '" src="' + String(href).replace(/"/g, '&quot;') +
+      '" alt="" draggable="false" style="width:' + iconPx + 'px;height:' + iconPx + 'px;display:block;object-fit:contain;' +
+      (cached ? 'opacity:1;' : 'opacity:0;') + '"/>';
 }
+
 
 // Фиксированный маленький размер, без зависимости от зума
 function createObjectIconByTemplate(tpl, angle, mirrored) {
-    const scale = (settings.sizeMultiplier != null ? settings.sizeMultiplier : 1) * (tpl && isPvo(tpl) ? 0.78 : 1);
+    const tid = tpl && tpl.id;
+    const isSu = tid === 'su30' || tid === 'su34' || tid === 'su35' || tid === 'su57';
+    const scale = (settings.sizeMultiplier != null ? settings.sizeMultiplier : 1)
+        * (tpl && isPvo(tpl) ? 0.78 : 1)
+        * (isSu ? 1.38 : 1);
     const shape = buildSolidObjectShape(tpl);
     const scaleX = mirrored ? -1 : 1;
     const iconClass = isPvo(tpl) ? "pvo-icon" : "uavIcon";
     const px = FIXED_ICON_PX, half = px / 2;
+    const stripes = (settings.showObjectStripes !== false)
+        ? '<div class="object-stripes" aria-hidden="true"><i></i><i></i><i></i></div>'
+        : '';
     return L.divIcon({
         className: iconClass + (availableInIconStyle(tpl) ? "" : " unavailable-icon"),
-        html: '<div style="width:' + px + 'px;height:' + px + 'px;display:flex;align-items:center;justify-content:center;transform: rotate(' + angle + 'deg) scaleX(' + scaleX + ') scale(' + scale + '); transform-origin:center center;">' + shape + '</div>' + (isPvo(tpl) ? '<div class="pvo-ammo-track"><div class="pvo-ammo-fill"></div></div>' : ''),
+        html: '<div style="width:' + px + 'px;height:' + px + 'px;display:flex;align-items:center;justify-content:center;transform: rotate(' + angle + 'deg) scaleX(' + scaleX + ') scale(' + scale + '); transform-origin:center center;">' + shape + '</div>' + stripes + (isPvo(tpl) ? '<div class="pvo-ammo-track"><div class="pvo-ammo-fill"></div></div>' : ''),
         iconSize: [px, px], iconAnchor: [half, half]
     });
 }
@@ -3560,7 +3896,7 @@ const liveTrails = new Set();
 function startFlightTrail(latlng, color) {
     if (!settings.showFlightTrails) return null;
     const trail = {points: [L.latLng(latlng)], line: L.polyline([latlng], {
-        color: color || '#d90047', weight: 2, opacity: 0.5, interactive: false,
+        color: color || '#cf014b', weight: 2, opacity: 0.5, interactive: false,
         lineJoin: 'round', lineCap: 'round'
     }).addTo(map), ended: false};
     liveTrails.add(trail);
@@ -3568,7 +3904,7 @@ function startFlightTrail(latlng, color) {
 }
 function appendFlightTrail(owner, latlng) {
     if (!settings.showFlightTrails || !owner || !owner.marker) return;
-    if (!owner.flightTrail) owner.flightTrail = startFlightTrail(latlng, '#d90047');
+    if (!owner.flightTrail) owner.flightTrail = startFlightTrail(latlng, '#cf014b');
     const trail = owner.flightTrail;
     if (!trail) return;
     const loc = L.latLng(latlng);
@@ -3695,7 +4031,7 @@ function launchAircraftMissile(aircraft, targetLatLng) {
     const anim = {marker:L.marker(startPoint,{icon:createObjectIconByTemplate(tpl, aircraft.angle || 0,false),interactive:false}).addTo(map),
         template:tpl, flightTrail:null, running:true, launchedFromAircraft:true, destroyed:false,
         launchOrigin:L.latLng(startPoint), targetLatLng:L.latLng(targetLatLng)};
-    if (settings.showFlightTrails) anim.flightTrail = startFlightTrail(startPoint, '#d90047');
+    if (settings.showFlightTrails) anim.flightTrail = startFlightTrail(startPoint, '#cf014b');
     anim.angle = getShahedFlightAngle(startPoint,targetLatLng);
     if (settings.showTargetBlock2) {
         anim.targetNum = String(++targetCounter);
@@ -4881,7 +5217,14 @@ function ensureZrvOverlaySources(){
   if (typeof createObjectIconByTemplate !== 'function') { hudMsg('ERR: no icon fn'); return; }
 
   const liveFlyers = [];
-  const liveLayer = L.layerGroup().addTo(map);
+  try {
+    if (!map.getPane('liveTargetsPane')) {
+      map.createPane('liveTargetsPane');
+      map.getPane('liveTargetsPane').style.zIndex = '650';
+      map.getPane('liveTargetsPane').style.pointerEvents = 'auto';
+    }
+  } catch (e) {}
+  const liveLayer = L.layerGroup([], { pane: 'liveTargetsPane' }).addTo(map);
   const dimapById = new Map();
   const aviaById = new Map();
   let dimapBusy=false, aviaBusy=false, dimapTimer=null, aviaTimer=null;
@@ -4991,11 +5334,63 @@ function ensureZrvOverlaySources(){
   function createFlyer(id,tpl,lat,lng,ang,speed,flags){
     const pos=[Number(lat),Number(lng)];
     if(!Number.isFinite(pos[0])||!Number.isFinite(pos[1])) return null;
-    const marker=L.marker(pos,{icon:makeIcon(tpl,ang||0),interactive:true}).addTo(liveLayer);
-    const f={id,template:tpl,marker,angle:ang||0,targetBearing:ang||0,speedKmh:speed||tpl.realSpeed||150,renderPos:pos.slice(),_seg:null,fromDimap:!!flags.fromDimap,fromAviacontrol:!!flags.fromAviacontrol,isLive:true,isApiTarget:true};
+    flags = flags || {};
+    const marker=L.marker(pos,{
+      icon:makeIcon(tpl,ang||0),
+      interactive:true,
+      keyboard:false,
+      pane: 'liveTargetsPane'
+    }).addTo(liveLayer);
+    try {
+      const el = marker.getElement && marker.getElement();
+      if (el) {
+        el.style.display = '';
+        el.style.visibility = 'visible';
+        el.style.opacity = '1';
+        el.classList.remove('unavailable-icon');
+        if (el.className && el.className.replace) el.className = String(el.className).replace(/\bunavailable-icon\b/g,'').trim();
+      }
+    } catch (e) {}
+    const f={
+      id:id, template:tpl, marker:marker,
+      angle:ang||0, targetBearing:ang||0,
+      speedKmh:speed||tpl.realSpeed||150,
+      realSpeedKmh:speed||tpl.realSpeed||150,
+      renderPos:pos.slice(), _seg:null,
+      fromDimap:!!flags.fromDimap, fromAviacontrol:!!flags.fromAviacontrol,
+      isLive:true, isApiTarget:true, _pp2Expanded:false
+    };
+    // Номер как в старой версии: targetNum + подпись ПП, клик раскрывает инфо
+    try {
+      if (typeof ensureTargetIds === 'function') ensureTargetIds(f, L.latLng(pos[0], pos[1]), tpl);
+      else {
+        if (!f.targetNum) f.targetNum = String(1000 + (liveFlyers.length % 9000));
+        if (!f.pp2Num) f.pp2Num = ('10' + String(f.targetNum).padStart(3,'0')).slice(0,5);
+      }
+      f.pp2Speed = Math.max(1, Math.round((f.speedKmh || tpl.realSpeed || 120) / 2.7));
+      if (typeof settings !== 'undefined' && settings.showTargetBlock2 && typeof makeTargetBlockLabel2 === 'function') {
+        f.targetLabel2 = makeTargetBlockLabel2(L.latLng(pos[0], pos[1]), f).addTo(map);
+        if (f.targetLabel2 && f.targetLabel2.options) {
+          try { f.targetLabel2.options.pane = 'liveTargetsPane'; } catch(e){}
+        }
+      }
+      if (typeof bindPP2Selection === 'function') bindPP2Selection(f, f.targetLabel2);
+    } catch (e) {}
     liveFlyers.push(f); return f;
   }
-  function removeFlyer(f){ if(!f)return; try{if(f.marker)liveLayer.removeLayer(f.marker);}catch(e){} f.marker=null; const i=liveFlyers.indexOf(f); if(i>=0)liveFlyers.splice(i,1); }
+  function removeFlyer(f){
+    if(!f)return;
+    try{
+      if(typeof setPP2Expanded==='function' && f._pp2Expanded) setPP2Expanded(f,false);
+      if(typeof removePP2PastTrail==='function') removePP2PastTrail(f);
+      if(f.targetLabel2){ try{map.removeLayer(f.targetLabel2);}catch(e){} f.targetLabel2=null; }
+      if(f.targetLabel){ try{map.removeLayer(f.targetLabel);}catch(e){} f.targetLabel=null; }
+      if(f.marker) liveLayer.removeLayer(f.marker);
+    }catch(e){}
+    f.marker=null;
+    const i=liveFlyers.indexOf(f);
+    if(i>=0) liveFlyers.splice(i,1);
+  }
 
   function haversineKm(a, b) {
     const R = 6371;
@@ -5057,16 +5452,19 @@ function ensureZrvOverlaySources(){
       return;
     }
 
-    // Антиоткат (как в index): мелкие «назад» по курсу режем в боковое смещение
+    // Антиоткат: только мелкий откат назад. Явный поворот не проецируем вбок.
     const base = sg.lastAcc || previousFix;
     const cosL = Math.max(0.05, Math.cos(base[0] * Math.PI / 180));
     let vx = (newPos[1] - base[1]) * 111 * cosL;
     let vy = (newPos[0] - base[0]) * 111;
     let accPos = newPos.slice();
     const dir = f._dir;
-    if (dir) {
+    const moveLen = Math.hypot(vx, vy);
+    if (dir && moveLen > 1e-6) {
       const along = vx * dir[0] + vy * dir[1];
-      if (along < 0 && Math.hypot(vx, vy) < 3) {
+      const cross = Math.abs(vx * dir[1] - vy * dir[0]);
+      const isTurn = cross > Math.max(0.15, Math.abs(along) * 0.55);
+      if (!isTurn && along < 0 && moveLen < 3) {
         f._backCnt = (f._backCnt || 0) + 1;
         if (f._backCnt < 4) {
           vx -= along * dir[0];
@@ -5075,8 +5473,9 @@ function ensureZrvOverlaySources(){
         } else {
           f._dir = null; f._backCnt = 0;
         }
-      } else if (along >= 0) {
+      } else {
         f._backCnt = 0;
+        if (isTurn) f._dir = null;
       }
     }
     const fixDistanceKm = haversineKm(base, accPos);
@@ -5153,17 +5552,21 @@ function ensureZrvOverlaySources(){
         if (!pos || !Number.isFinite(pos[0])) continue;
         f.renderPos = pos;
 
-        // курс по фактическому направлению сегмента / движения
-        let desired = Number(f.targetBearing) || f.angle || 0;
+        // Курс: приоритет сегменту / targetBearing.
+        // Микро-bearing между кадрами давал лишние повороты.
+        let desired = Number.isFinite(f.targetBearing) ? f.targetBearing : (f.angle || 0);
+        let haveStableCourse = Number.isFinite(f.targetBearing);
         if (sg) {
+          const segKm = haversineKm(sg.from, sg.to);
           const kSeg = Math.min(1, Math.max(0, (now - sg.t0) / Math.max(1, sg.dur)));
-          if (kSeg < 1 && haversineKm(sg.from, sg.to) > 0.005) {
+          if (kSeg < 1 && segKm > 0.005) {
             desired = bearing(sg.from, sg.to);
+            haveStableCourse = true;
           }
         }
-        if (f._lastAnglePos) {
+        if (!haveStableCourse && f._lastAnglePos) {
           const movedKm = haversineKm(f._lastAnglePos, pos);
-          if (movedKm > 0.003) desired = bearing(f._lastAnglePos, pos);
+          if (movedKm > 0.012) desired = bearing(f._lastAnglePos, pos);
         }
         f._lastAnglePos = pos.slice();
 
@@ -5172,7 +5575,8 @@ function ensureZrvOverlaySources(){
         let diff = desired - f.angle;
         while (diff > 180) diff -= 360;
         while (diff < -180) diff += 360;
-        const maxTurn = 120 * dtTurn; // чуть спокойнее index (200), меньше рывков
+        const turnRate = Math.abs(diff) > 45 ? 260 : 160;
+        const maxTurn = turnRate * dtTurn;
         f.angle += Math.max(-maxTurn, Math.min(maxTurn, diff));
         f.angle = ((f.angle % 360) + 360) % 360;
 
@@ -5182,6 +5586,25 @@ function ensureZrvOverlaySources(){
         if (rot) {
           const sx = /scaleX\([^)]*\)/.exec(rot.style.transform || '');
           rot.style.transform = 'rotate(' + f.angle + 'deg)' + (sx ? ' ' + sx[0] : '');
+        }
+        // Подпись ПП / номер / угол — как в старой версии, следует за целью
+        if (f.targetLabel2) {
+          try {
+            f.targetLabel2.setLatLng(pos);
+            const lel = f.targetLabel2.getElement && f.targetLabel2.getElement();
+            if (lel) {
+              const angleEl = lel.querySelector('.pp2-angle');
+              if (angleEl) angleEl.textContent = Math.round((((f.angle || 0) % 360) + 360) % 360) + '°';
+              const idEl = lel.querySelector('.pp2-id');
+              if (idEl && f.pp2Num) idEl.textContent = f.pp2Num + ' ПП';
+            }
+          } catch (eLab) {}
+        } else if (typeof settings !== 'undefined' && settings.showTargetBlock2 && typeof makeTargetBlockLabel2 === 'function') {
+          try {
+            if (typeof ensureTargetIds === 'function') ensureTargetIds(f, L.latLng(pos[0], pos[1]), f.template);
+            f.targetLabel2 = makeTargetBlockLabel2(L.latLng(pos[0], pos[1]), f).addTo(map);
+            if (typeof bindPP2Selection === 'function') bindPP2Selection(f, f.targetLabel2);
+          } catch (eLab2) {}
         }
       } catch (e) {
         removeFlyer(f);
@@ -6456,7 +6879,7 @@ body.rubezh-placing-grid #virazhMap,body.rubezh-placing-grid #map{cursor:crossha
 #rubezh424Settings .r424-color-item{display:flex;align-items:center;gap:10px;min-height:28px;font:14px Arial,sans-serif;color:#222}
 #rubezh424Settings .r424-dot{width:16px;height:16px;border-radius:50%;display:inline-block;flex:0 0 16px;border:2px solid transparent}
 #rubezh424Settings .r424-dot.black{background:#111}
-#rubezh424Settings .r424-dot.magenta{background:#e00057}
+#rubezh424Settings .r424-dot.magenta{background:#cf014b}
 #rubezh424Settings .r424-dot.blue{background:#2d86df}
 #rubezh424Settings .r424-dot.orange{background:#f7a500}
 #rubezh424Settings .r424-reset-colors{all:unset!important;box-sizing:border-box!important;display:block!important;width:100%!important;padding:10px 2px 4px!important;color:#72aa44!important;font:700 15px Arial,sans-serif!important;cursor:pointer!important;text-align:left!important}
