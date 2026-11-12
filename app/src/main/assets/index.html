@@ -3062,7 +3062,7 @@ function __paintSolidWithOutline(srcImg, color, outlinePx) {
 }
 function __requestSolidSilhouette(src, color, done) {
   if (!src) return;
-  const key = src + '|' + (color || '#cf014b') + '|v3';
+  const key = src + '|' + (color || '#cf014b') + '|v4';
   if (__solidSilhouetteCache.has(key)) { done(__solidSilhouetteCache.get(key)); return; }
   if (__solidSilhouettePending.has(key)) { __solidSilhouettePending.get(key).push(done); return; }
   __solidSilhouettePending.set(key, [done]);
@@ -3093,16 +3093,18 @@ function buildSolidObjectShape(tpl, overrideColor, forceStyle1) {
     const color = (overrideColor && String(overrideColor)) || '#cf014b';
     const iconPx = (typeof FIXED_ICON_PX === 'number' ? FIXED_ICON_PX : 28);
     const src = String(imageSource || '');
-    const key = src + '|' + color + '|v3';
+    const key = src + '|' + color + '|v4';
     const cached = __solidSilhouetteCache.has(key) ? __solidSilhouetteCache.get(key) : null;
     const id = 'solid-icon-' + (++solidIconSerial);
     if (!cached && src) {
       __requestSolidSilhouette(src, color, function(url) {
         try {
-          document.querySelectorAll('img[data-solid-key="' + id + '"]').forEach(function(node) {
-            node.src = url;
-            node.style.opacity = '1';
-          });
+          if (typeof url === 'string' && url.indexOf('data:image/png') === 0) {
+            document.querySelectorAll('img[data-solid-key="' + id + '"]').forEach(function(node) {
+              node.src = url;
+              node.style.opacity = '1';
+            });
+          }
         } catch (e) {}
       });
     }
