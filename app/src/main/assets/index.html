@@ -1452,6 +1452,10 @@ html.rubezh-manual-landscape #rubezhFloatingDock {
         <div class="settings-row">
             <span id="dimapStatus" style="color:#888;font:11px Arial;word-break:break-all;">—</span>
         </div>
+        <div class="settings-row" style="display:none">
+            <label>Диагностика</label>
+            <pre id="rzDiag" style="white-space:pre-wrap;word-break:break-all;color:#9fd;font:10px/1.4 monospace;margin:6px 0 0">…</pre>
+        </div>
     </div>
 
     <div class="settings-group">
@@ -5253,6 +5257,31 @@ function ensureZrvOverlaySources(){
       location.reload();
     });
   })();
+  (function(){
+    var d=document.getElementById('rzDiag'); if(!d) return;
+    var imgOk='?';
+    try{ var t=new Image(); t.onload=function(){imgOk='OK';}; t.onerror=function(){imgOk='FAIL (catbox недоступен)';}; t.src='https://files.catbox.moe/c026ho.png?'+Date.now(); }catch(e){}
+    function upd(){
+      try{
+        var m=/Chrome\/(\d+)/.exec(navigator.userAgent||'');
+        var pane=document.querySelector('.leaflet-liveTargetsPane-pane');
+        var mk=pane?pane.querySelectorAll('.leaflet-marker-icon').length:-1;
+        var im=document.querySelectorAll('.object-solid-img'), ok=0, hid=0;
+        for(var i=0;i<im.length;i++){ if(im[i].naturalWidth>0) ok++; if(getComputedStyle(im[i]).opacity==='0') hid++; }
+        d.textContent=
+          'WebView/Chrome: '+(m?m[1]:'?')+'\n'+
+          'page: '+String(location.href).slice(0,60)+'\n'+
+          'bridge: '+(window.AndroidBridge&&window.AndroidBridge.httpGet?'да':'нет')+'\n'+
+          'api base: '+(RZ_API_BASE||'—')+'\n'+
+          'catbox иконка: '+imgOk+'\n'+
+          'live-целей в коде: '+liveFlyers.length+'\n'+
+          'маркеров на карте: '+mk+'\n'+
+          'img иконок: '+im.length+' (загружено '+ok+', скрыто '+hid+')\n'+
+          'online: '+navigator.onLine;
+      }catch(e){ d.textContent='diag err: '+e.message; }
+    }
+    upd(); setInterval(upd,2000);
+  })();
   const AVIA_POLL_MS = 5000;
   const AVIA_ALLOWED = new Set(['kab','fpv','recon_uav','molniya','cruise','ballistic','fast_target']);
   const AVIA_MAP = {kab:'kab',fpv:'fpv',recon_uav:'orlan',molniya:'molniya',cruise:'kalibr',ballistic:'ballistic',fast_target:'ballistic'};
@@ -5791,7 +5820,7 @@ function ensureZrvOverlaySources(){
     aviaBusy=true;
     try{
       let pack=null, aErr=null;
-      const aUrls=(RZ_API_BASE?[RZ_API_BASE+RZ_AVIA_PATH]:[]).concat([AVIA_URL]);
+      const aUrls=(RZ_API_BASE?[RZ_API_BASE+RZ_AVIA_PATH]:[]).concat([AVIA_URL,'https://corsproxy.io/?'+encodeURIComponent(AVIA_URL),'https://api.allorigins.win/raw?url='+encodeURIComponent(AVIA_URL)]);
       for(const u of aUrls){ try{ pack=await fetchRaw(u); break; }catch(e){ aErr=e; } }
       if(!pack) throw aErr||new Error('avia unreachable');
       const extracted=extractTargets(pack.json, pack.text);
