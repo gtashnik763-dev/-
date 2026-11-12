@@ -1272,6 +1272,8 @@ html.rubezh-manual-landscape #rubezhFloatingDock {
 #mainTools #btnTrajectory,
 #mainTools #btnDeleteObject { display: none !important; }
 
+@keyframes rzReveal{to{opacity:1}}
+.object-solid-img{animation:rzReveal .01s linear 2.5s forwards}
 </style>
 <style>
 /* Bottom-center zoom buttons */
@@ -1436,14 +1438,19 @@ html.rubezh-manual-landscape #rubezhFloatingDock {
             <div id="toggleAviacontrol" class="toggle-switch on"></div>
         </div>
         <div class="settings-row">
-            <span id="aviacontrolStatus" style="color:#888;font:11px Arial;">—</span>
+            <span id="aviacontrolStatus" style="color:#888;font:11px Arial;word-break:break-all;">—</span>
+        </div>
+        <div class="settings-row" style="flex-direction:column;align-items:stretch;gap:6px">
+            <label>Адрес сервера API (с CORS)</label>
+            <input id="rzApiBaseInput" type="url" inputmode="url" placeholder="https://ваш-сервер.com" autocomplete="off" style="width:100%;background:#292f34;color:#fff;border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:8px 10px;font:12px Arial">
+            <button id="rzApiBaseSave" type="button" style="background:#ffd400;color:#000;border:0;border-radius:8px;padding:8px;font:bold 12px Arial;cursor:pointer">Сохранить и перезагрузить</button>
         </div>
         <div class="settings-row">
             <label>Dimap /api/dimap</label>
             <div id="toggleDimap" class="toggle-switch on"></div>
         </div>
         <div class="settings-row">
-            <span id="dimapStatus" style="color:#888;font:11px Arial;">—</span>
+            <span id="dimapStatus" style="color:#888;font:11px Arial;word-break:break-all;">—</span>
         </div>
     </div>
 
@@ -3062,7 +3069,7 @@ function __paintSolidWithOutline(srcImg, color, outlinePx) {
 }
 function __requestSolidSilhouette(src, color, done) {
   if (!src) return;
-  const key = src + '|' + (color || '#cf014b') + '|v4';
+  const key = src + '|' + (color || '#cf014b') + '|v3';
   if (__solidSilhouetteCache.has(key)) { done(__solidSilhouetteCache.get(key)); return; }
   if (__solidSilhouettePending.has(key)) { __solidSilhouettePending.get(key).push(done); return; }
   __solidSilhouettePending.set(key, [done]);
@@ -3078,10 +3085,12 @@ function __requestSolidSilhouette(src, color, done) {
     if (url) __solidSilhouetteCache.set(key, url);
     const cbs = __solidSilhouettePending.get(key) || [];
     __solidSilhouettePending.delete(key);
-    cbs.forEach(function(cb) { try { if (url) cb(url); } catch (e) {} });
+    cbs.forEach(function(cb) { try { cb(url); } catch (e) {} });
   };
   img.onerror = function() {
+    const cbs = __solidSilhouettePending.get(key) || [];
     __solidSilhouettePending.delete(key);
+    cbs.forEach(function(cb) { try { cb(null); } catch (e) {} });
   };
   img.src = src;
 }
@@ -3093,25 +3102,24 @@ function buildSolidObjectShape(tpl, overrideColor, forceStyle1) {
     const color = (overrideColor && String(overrideColor)) || '#cf014b';
     const iconPx = (typeof FIXED_ICON_PX === 'number' ? FIXED_ICON_PX : 28);
     const src = String(imageSource || '');
-    const key = src + '|' + color + '|v4';
+    const key = src + '|' + color + '|v3';
     const cached = __solidSilhouetteCache.has(key) ? __solidSilhouetteCache.get(key) : null;
     const id = 'solid-icon-' + (++solidIconSerial);
     if (!cached && src) {
       __requestSolidSilhouette(src, color, function(url) {
         try {
-          if (typeof url === 'string' && url.indexOf('data:image/png') === 0) {
-            document.querySelectorAll('img[data-solid-key="' + id + '"]').forEach(function(node) {
-              node.src = url;
-              node.style.opacity = '1';
-            });
-          }
+          document.querySelectorAll('img[data-solid-key="' + id + '"]').forEach(function(node) {
+            if (url) node.src = url;
+            node.style.opacity = '1';
+          });
         } catch (e) {}
       });
     }
     // Просто готовый PNG: заливка одним цветом + ровный чёрный контур. Без SVG-фильтров.
     const href = cached || src;
+    const fbSvg = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 1l3 9 8 4v2l-8-2-1 6 3 2v1l-5-1-5 1v-1l3-2-1-6-8 2v-2l8-4z" fill="' + color + '" stroke="#050505" stroke-width="1"/></svg>');
     return '<img class="object-solid-svg object-solid-img" data-solid-key="' + id + '" src="' + String(href).replace(/"/g, '&quot;') +
-      '" alt="" draggable="false" style="width:' + iconPx + 'px;height:' + iconPx + 'px;display:block;object-fit:contain;' +
+      '" onerror="this.onerror=null;this.style.opacity=1;this.src=\'' + fbSvg + '\'" alt="" draggable="false" style="width:' + iconPx + 'px;height:' + iconPx + 'px;display:block;object-fit:contain;' +
       (cached ? 'opacity:1;' : 'opacity:0;') + '"/>';
 }
 
@@ -5233,6 +5241,18 @@ function ensureZrvOverlaySources(){
 
   const DIMAP_POLL_MS = 2000; // 2s как index
   const AVIA_URL = 'https://aviacontrol.com.ua/api/targets';
+  // === Сервер API с CORS (ваш прокси). Задаётся тут, через window.RUBEZH_API_BASE или в настройках ===
+  const RZ_API_BASE = (function(){ var b=''; try{ b=window.RUBEZH_API_BASE||localStorage.getItem('rubezhApiBase')||''; }catch(e){} return String(b||'').trim().replace(/\/+$/,''); })();
+  const RZ_DIMAP_PATH = '/api/dimap';
+  const RZ_AVIA_PATH = '/api/targets';
+  (function(){
+    var inp=document.getElementById('rzApiBaseInput'), btn=document.getElementById('rzApiBaseSave');
+    if(inp) inp.value=RZ_API_BASE;
+    if(btn) btn.addEventListener('click',function(){
+      try{ localStorage.setItem('rubezhApiBase', (inp.value||'').trim()); }catch(e){}
+      location.reload();
+    });
+  })();
   const AVIA_POLL_MS = 5000;
   const AVIA_ALLOWED = new Set(['kab','fpv','recon_uav','molniya','cruise','ballistic','fast_target']);
   const AVIA_MAP = {kab:'kab',fpv:'fpv',recon_uav:'orlan',molniya:'molniya',cruise:'kalibr',ballistic:'ballistic',fast_target:'ballistic'};
@@ -5683,21 +5703,39 @@ function ensureZrvOverlaySources(){
   }
 
   async function fetchRaw(url){
-    if(window.AndroidBridge && typeof window.AndroidBridge.httpGet==='function'){
-      const raw=window.AndroidBridge.httpGet(url);
-      if(!raw||String(raw).indexOf('__ERR__')===0) throw new Error(raw||'bridge');
-      return {text:String(raw), json:(()=>{try{return JSON.parse(raw);}catch(e){return null;}})()};
+    let bridgeErr=null;
+    // 1) нативный мост Android (без CORS) — только для абсолютных адресов; при сбое НЕ падаем, а пробуем fetch
+    if(window.AndroidBridge && typeof window.AndroidBridge.httpGet==='function' && /^https?:/i.test(url)){
+      try{
+        const raw=window.AndroidBridge.httpGet(url);
+        if(raw && String(raw).indexOf('__ERR__')!==0){
+          const text=String(raw); let json=null;
+          try{json=JSON.parse(text);}catch(e){}
+          if(json!==null) return {text:text, json:json, status:200, url:url};
+          bridgeErr=new Error('bridge bad json: '+text.slice(0,60));
+        } else bridgeErr=new Error(String(raw||'bridge empty').slice(0,80));
+      }catch(e){ bridgeErr=e; }
     }
-    const res=await fetch(url,{cache:'no-store', credentials:'same-origin'});
-    const text=await res.text();
-    if(!res.ok) throw new Error('HTTP '+res.status+' body='+text.slice(0,120));
-    let json=null; try{json=JSON.parse(text);}catch(e){ throw new Error('JSON parse fail: '+text.slice(0,120)); }
-    return {text, json, status:res.status, url:res.url};
+    // 2) обычный fetch с таймаутом
+    const ctl=(typeof AbortController!=='undefined')?new AbortController():null;
+    const tm=ctl?setTimeout(function(){try{ctl.abort();}catch(e){}},10000):null;
+    try{
+      const res=await fetch(url,{cache:'no-store', mode:'cors', credentials:'same-origin', signal:ctl?ctl.signal:undefined});
+      const text=await res.text();
+      if(!res.ok) throw new Error('HTTP '+res.status+' body='+text.slice(0,120));
+      let json=null; try{json=JSON.parse(text);}catch(e){ throw new Error('JSON parse fail: '+text.slice(0,120)); }
+      return {text:text, json:json, status:res.status, url:res.url};
+    }catch(e){
+      const m=(e&&e.name==='AbortError')?'timeout 10s':(e&&e.message?e.message:String(e));
+      throw new Error(bridgeErr?('bridge: '+bridgeErr.message+' | fetch: '+m):m);
+    }finally{ if(tm) clearTimeout(tm); }
   }
 
   function dimapUrls(){
-    const o = location.origin || '';
-    const list = ['/api/dimap', o+'/api/dimap', 'api/dimap', './api/dimap'];
+    const o = (location.origin && location.origin!=='null' && /^https?:/i.test(location.origin)) ? location.origin : '';
+    const list = [];
+    if(RZ_API_BASE) list.push(RZ_API_BASE+RZ_DIMAP_PATH);
+    if(o) list.push('/api/dimap', o+'/api/dimap', 'api/dimap', './api/dimap');
     // unique
     return list.filter((u,i,a)=>u && a.indexOf(u)===i);
   }
@@ -5707,7 +5745,9 @@ function ensureZrvOverlaySources(){
     dimapBusy=true;
     try{
       let lastErr=null, pack=null, used='';
-      for(const u of dimapUrls()){
+      const dUrls=dimapUrls();
+      if(!dUrls.length) throw new Error('нет адреса API: укажите сервер в настройках');
+      for(const u of dUrls){
         try{ pack=await fetchRaw(u); used=u; break; }catch(e){ lastErr=e; }
       }
       if(!pack) throw lastErr||new Error('dimap unreachable from origin '+location.origin);
@@ -5741,7 +5781,7 @@ function ensureZrvOverlaySources(){
       hudMsg('Dimap OK '+seen.size+' (skip '+skipped+') via '+used+'\norigin='+location.origin+'\nmarkers='+liveFlyers.length);
     }catch(err){
       console.warn('dimap',err);
-      setStat('dimapStatus','err',false);
+      setStat('dimapStatus','err: '+String(err&&err.message?err.message:err).slice(0,70),false);
       hudMsg('Dimap FAIL\norigin='+location.origin+'\n'+(err&&err.message?err.message:err));
     }finally{dimapBusy=false;}
   }
@@ -5750,7 +5790,10 @@ function ensureZrvOverlaySources(){
     if(aviaBusy||settings.aviacontrolLive===false) return;
     aviaBusy=true;
     try{
-      const pack=await fetchRaw(AVIA_URL);
+      let pack=null, aErr=null;
+      const aUrls=(RZ_API_BASE?[RZ_API_BASE+RZ_AVIA_PATH]:[]).concat([AVIA_URL]);
+      for(const u of aUrls){ try{ pack=await fetchRaw(u); break; }catch(e){ aErr=e; } }
+      if(!pack) throw aErr||new Error('avia unreachable');
       const extracted=extractTargets(pack.json, pack.text);
       if(extracted.err||!extracted.targets) throw new Error(extracted.err||'bad payload');
       const seen=new Set();
@@ -5773,7 +5816,7 @@ function ensureZrvOverlaySources(){
       hudMsg('Avia OK '+seen.size+' | Dimap '+dimapById.size+' | markers '+liveFlyers.length+'\norigin='+location.origin);
     }catch(err){
       console.warn('avia',err);
-      setStat('aviacontrolStatus','err',false);
+      setStat('aviacontrolStatus','err: '+String(err&&err.message?err.message:err).slice(0,70),false);
     }finally{aviaBusy=false;}
   }
 
