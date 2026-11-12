@@ -224,7 +224,7 @@ button:disabled { opacity: 0.35; cursor: not-allowed; }
 
 /* Индикатор боезапаса (без чисел и подписей), фиксирован под ПВО. */
 .pvo-ammo-track {
-    position: absolute; left: 13px; top: 68px; width: 50px; height: 6px;
+    position: absolute; left: 3px; top: 34px; width: 30px; height: 4px;
     border: 1px solid rgba(255,255,255,.7); border-radius: 5px;
     overflow: hidden; background: rgba(0,0,0,.85);
     box-shadow: 0 1px 4px #0009; pointer-events: none;
@@ -236,18 +236,18 @@ button:disabled { opacity: 0.35; cursor: not-allowed; }
 .unavailable-icon { display: none !important; }
 
 .uavIcon {
-    width: 76px!important; height: 76px!important;
+    width: 36px!important; height: 36px!important;
     background: transparent!important; border: 0!important;
     overflow: visible!important;
 }
 .uavIcon div {
-    width: 76px; height: 76px;
+    width: 36px; height: 36px;
     transform-origin: center center;
     display: flex; align-items: center; justify-content: center;
     overflow: visible;
 }
 .uavIcon img {
-    width: 76px; height: 76px; display: block;
+    width: 36px; height: 36px; display: block;
     object-fit: contain; overflow: visible;
     pointer-events: none; user-select: none;
     filter:
@@ -257,18 +257,18 @@ button:disabled { opacity: 0.35; cursor: not-allowed; }
 body.no-glow .uavIcon img, body.icon-style-2 .uavIcon img { filter: none !important; }
 
 .pvo-icon {
-    width: 76px!important; height: 76px!important;
+    width: 36px!important; height: 36px!important;
     background: transparent!important; border: 0!important;
     overflow: visible!important;
 }
 .pvo-icon div {
-    width: 76px; height: 76px;
+    width: 36px; height: 36px;
     transform-origin: center center;
     display: flex; align-items: center; justify-content: center;
     overflow: visible;
 }
 .pvo-icon img {
-    width: 76px; height: 76px; display: block;
+    width: 36px; height: 36px; display: block;
     object-fit: contain; overflow: visible;
     pointer-events: none; user-select: none;
     filter:
@@ -280,8 +280,8 @@ body.no-glow .pvo-icon img, body.icon-style-2 .pvo-icon img { filter: none !impo
 
 .uavIcon .object-icon-shape,
 .pvo-icon .object-icon-shape {
-    width: 76px;
-    height: 76px;
+    width: 36px;
+    height: 36px;
     display: block;
     background: var(--obj-color, #d90047);
     -webkit-mask-repeat: no-repeat;
@@ -1277,14 +1277,22 @@ html.rubezh-manual-landscape #rubezhFloatingDock {
     </div>
 
     <div class="settings-group">
-        <h4>Живые цели Aviacontrol</h4>
+        <h4>Живые цели (как в РУБЕЖ)</h4>
         <div class="settings-row">
-            <label>Показывать live-цели (api/targets)</label>
+            <label>Aviacontrol (api/targets)</label>
             <div id="toggleAviacontrol" class="toggle-switch"></div>
         </div>
         <div class="settings-row">
             <label style="font-weight:normal;color:#999;font-size:11px;">Источник: aviacontrol.com.ua</label>
             <span id="aviacontrolStatus" style="color:#888;font:11px Arial;max-width:110px;text-align:right;">выкл</span>
+        </div>
+        <div class="settings-row">
+            <label>Dimap (/api/dimap)</label>
+            <div id="toggleDimap" class="toggle-switch"></div>
+        </div>
+        <div class="settings-row">
+            <label style="font-weight:normal;color:#999;font-size:11px;">Источник: dimap.live — шахеды и всё остальное</label>
+            <span id="dimapStatus" style="color:#888;font:11px Arial;max-width:110px;text-align:right;">выкл</span>
         </div>
     </div>
 
@@ -1532,7 +1540,7 @@ const settings = {
     showFlightTrails: true,
     glow: false,
     showHpBars: false,
-    sizeMultiplier: 0.5,
+    sizeMultiplier: 1.0,
     showPvoRadius: false,
     showPvoFill: false,
     zrvObjectDisplayMode: 'triangles',
@@ -1540,7 +1548,8 @@ const settings = {
     objectColor: "#d90047",
     iconStyle: 1,
     arrowColor: "#ff6a00",
-    aviacontrolLive: true
+    aviacontrolLive: true,
+    dimapLive: true
 };
 
 let targetCounter = 1000;
@@ -2170,6 +2179,21 @@ toggleAviacontrol.onclick = function() {
         stopAviacontrolFeed();
     }
 };
+const toggleDimap = document.getElementById("toggleDimap");
+const dimapStatusEl = document.getElementById("dimapStatus");
+if (toggleDimap) {
+  toggleDimap.onclick = function() {
+    settings.dimapLive = !settings.dimapLive;
+    toggleDimap.classList.toggle("on", settings.dimapLive);
+    if (settings.dimapLive) {
+      setHint("Live-цели Dimap включены");
+      startDimapFeed();
+    } else {
+      setHint("Live-цели Dimap выключены");
+      stopDimapFeed();
+    }
+  };
+}
 
 const zrvObjectDisplayMode = document.getElementById('zrvObjectDisplayMode');
 zrvObjectDisplayMode.addEventListener('change',function(){
@@ -2769,23 +2793,23 @@ function buildSolidObjectShape(tpl, overrideColor, forceStyle1 = false) {
         '</svg>';
 }
 
+// Фиксированный размер иконок на экране (не зависит от зума)
+const FIXED_ICON_PX = 36;
 function createObjectIconByTemplate(tpl, angle, mirrored) {
-    const scale = getUavScale() * (tpl && isPvo(tpl) ? 0.78 : 1);
+    const scale = (settings.sizeMultiplier != null ? settings.sizeMultiplier : 1) * (tpl && isPvo(tpl) ? 0.78 : 1);
     const shape = buildSolidObjectShape(tpl);
     const scaleX = mirrored ? -1 : 1;
     const iconClass = isPvo(tpl) ? "pvo-icon" : "uavIcon";
+    const px = FIXED_ICON_PX;
+    const half = px / 2;
     return L.divIcon({
         className: iconClass + (availableInIconStyle(tpl) ? "" : " unavailable-icon"),
-        html: '<div style="transform: rotate(' + angle + 'deg) scaleX(' + scaleX + ') scale(' + scale + '); transform-origin:center center;">' + shape + '</div>' + (isPvo(tpl) ? '<div class="pvo-ammo-track"><div class="pvo-ammo-fill"></div></div>' : ''),
-        iconSize: [76, 76], iconAnchor: [38, 38]
+        html: '<div style="width:' + px + 'px;height:' + px + 'px;display:flex;align-items:center;justify-content:center;transform: rotate(' + angle + 'deg) scaleX(' + scaleX + ') scale(' + scale + '); transform-origin:center center;">' + shape + '</div>' + (isPvo(tpl) ? '<div class="pvo-ammo-track"><div class="pvo-ammo-fill"></div></div>' : ''),
+        iconSize: [px, px], iconAnchor: [half, half]
     });
 }
 function getUavScale() {
-    const zoom = map.getZoom();
-    const difference = zoom - baseUavZoom;
-    let scale = Math.pow(0.86, difference);
-    scale = Math.max(0.48, Math.min(1.35, scale));
-    return scale * settings.sizeMultiplier;
+    return settings.sizeMultiplier != null ? settings.sizeMultiplier : 1;
 }
 
 function attachHoverEvents(object) {
@@ -4861,27 +4885,34 @@ function ensureZrvOverlaySources(){
 //   LIVE: Aviacontrol.com.ua /api/targets
 // ============================================================
 const AVIACONTROL_URL = 'https://aviacontrol.com.ua/api/targets';
-const AVIACONTROL_POLL_MS = 8000;
+const AVIACONTROL_POLL_MS = 5000;
 const aviacontrolById = new Map();
 let aviacontrolTimer = null;
 let aviacontrolFetching = false;
 
+// Как в index: шахеды/ударные БПЛА из Aviacontrol НЕ показываем
+const AVIACONTROL_ALLOWED = new Set([
+  'kab', 'fpv', 'recon_uav', 'molniya',
+  'cruise', 'ballistic', 'fast_target'
+]);
 const AVIACONTROL_TYPE_MAP = {
-  strike_uav: 'geran2',
-  jet_uav: 'geran3',
-  recon_uav: 'orlan',
-  cruise: 'kalibr',
-  ballistic: 'ballistic',
-  fast_target: 'ballistic',
-  aircraft: 'su34',
   kab: 'kab',
   fpv: 'fpv',
-  molniya: 'molniya'
+  recon_uav: 'orlan',
+  molniya: 'molniya',
+  cruise: 'kalibr',
+  ballistic: 'ballistic',
+  fast_target: 'ballistic'
 };
 
 function aviacontrolTemplateFor(type) {
-  const id = AVIACONTROL_TYPE_MAP[type] || 'geran2';
-  return SPAWN_TEMPLATES.find(t => t.id === id) || SPAWN_TEMPLATES[0];
+  const key = String(type || '').trim().toLowerCase();
+  if (!AVIACONTROL_ALLOWED.has(key)) return null;
+  const id = AVIACONTROL_TYPE_MAP[key] || key;
+  const fallback = { molniya: 'orlan', lancet1: 'lancet3' };
+  let tpl = SPAWN_TEMPLATES.find(t => t.id === id);
+  if (!tpl && fallback[id]) tpl = SPAWN_TEMPLATES.find(t => t.id === fallback[id]);
+  return tpl || null;
 }
 
 function aviacontrolSetStatus(txt, ok) {
@@ -4907,6 +4938,7 @@ function destroyAviacontrolObject(obj) {
 }
 
 function createAviacontrolShahed(apiTarget, tpl) {
+  if (!tpl) return null;
   const pos = apiTarget.pos;
   if (!pos || !Number.isFinite(pos[0]) || !Number.isFinite(pos[1])) return null;
   const latlng = L.latLng(pos[0], pos[1]);
@@ -5049,12 +5081,16 @@ function applyAviacontrolPayload(data) {
   const seen = new Set();
   for (const t of data.targets) {
     if (!t || !t.id || !t.pos) continue;
-    seen.add(t.id);
-    let obj = aviacontrolById.get(t.id);
+    const typeKey = String(t.type || '').trim().toLowerCase();
+    if (!AVIACONTROL_ALLOWED.has(typeKey)) continue;
+    const tpl = aviacontrolTemplateFor(t.type);
+    if (!tpl) continue;
+    const id = String(t.id);
+    seen.add(id);
+    let obj = aviacontrolById.get(id);
     if (!obj || !obj.marker) {
-      const tpl = aviacontrolTemplateFor(t.type);
       obj = createAviacontrolShahed(t, tpl);
-      if (obj) aviacontrolById.set(t.id, obj);
+      if (obj) aviacontrolById.set(id, obj);
     } else {
       updateAviacontrolObject(obj, t);
     }
@@ -5066,7 +5102,7 @@ function applyAviacontrolPayload(data) {
     }
   }
   const ts = new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  aviacontrolSetStatus(data.targets.length + ' цел. · ' + ts, true);
+  aviacontrolSetStatus(seen.size + ' цел. · ' + ts, true);
 }
 
 // Android injects JSON here (native HTTP, no CORS).
@@ -5119,6 +5155,243 @@ function stopAviacontrolFeed(clearObjects = true) {
     aviacontrolSetStatus('выкл', null);
   }
 }
+// ============================================================
+//   LIVE: Dimap — как в index (РУБЕЖ)
+//   /api/dimap  (прокси dimap.live), опрос каждые 2 с
+//   Здесь показываются шахеды, реактивные, самолёты и т.д.
+// ============================================================
+const DIMAP_URL = '/api/dimap';
+const DIMAP_POLL_MS = 2000;
+const dimapById = new Map();
+let dimapTimer = null;
+let dimapFetching = false;
+
+const DIMAP_TYPE_MAP = {
+  avia: 'su34', aircraft: 'su34', kab: 'kab',
+  molniya: 'molniya', molnia: 'molniya', molnia1: 'molniya', molniya1: 'molniya', 'molnia-1': 'molniya', 'molniya-1': 'molniya',
+  shahed: 'geran2', geran2: 'geran2', geran_2: 'geran2', 'geran-2': 'geran2',
+  reactive_shahed: 'geran3', reactiveshahed: 'geran3', jet_uav: 'geran3', geran3: 'geran3',
+  geran_3: 'geran3', 'geran-3': 'geran3', shahed_238: 'geran3', shahed238: 'geran3', 'shahed-238': 'geran3',
+  geran4: 'geran4', geran_4: 'geran4', 'geran-4': 'geran4',
+  geran5: 'geran5', geran_5: 'geran5', 'geran-5': 'geran5',
+  lancet1: 'lancet1', lancet_1: 'lancet1', 'lancet-1': 'lancet1', lancet: 'lancet1',
+  lancet3: 'lancet3', lancet_3: 'lancet3', 'lancet-3': 'lancet3',
+  zala: 'zala', zala421: 'zala', 'zala-421': 'zala',
+  fpv: 'geran2',
+  uav: 'geran2', strike_uav: 'geran2', recon: 'orlan', recon_uav: 'orlan', orlan: 'orlan',
+  cruise: 'kalibr', missile: 'kalibr', ballistic: 'ballistic', ballistic_missile: 'ballistic',
+  iskander: 'iskander', oreshnik: 'oreshnik', kinzhal: 'kinzhal',
+  unknown: 'geran2', unk: 'geran2', other: 'geran2'
+};
+const DIMAP_UNKNOWN_ID = 'geran2';
+
+function dimapTemplateFor(type) {
+  const raw = String(type || '').trim().toLowerCase();
+  const compact = raw.replace(/[\s_-]+/g, '').replace(/[–—]/g, '-');
+  let id = null;
+  if (compact === 'molnia1' || compact === 'molniya1' || compact === 'molnia' || compact === 'molniya' ||
+      compact === 'moln' || /moln[iy]a\d*|молні[яа]-?\d*|молни[яа]-?\d*/.test(raw)) {
+    id = 'molniya';
+  } else if (compact === 'zala' || compact === 'zala421' || /\bzala\b|зала/.test(raw)) {
+    id = 'zala';
+  } else if (
+    compact === 'geran3' || compact === 'geran_3' || compact === 'reactiveshahed' ||
+    compact === 'shahed238' || compact === 'shahed_238' ||
+    raw === 'reactive_shahed' || raw === 'geran-3' ||
+    /(?:герань|geran)[\s_-]*(?:3|iii)/.test(raw) ||
+    /reactive[\s_-]*shahed/.test(raw) ||
+    /shahed[\s_-]*238/.test(raw)
+  ) {
+    id = 'geran3';
+  } else if (compact === 'geran5' || /(?:герань|geran|shahed)[\s_-]*(?:5|v)(?!\d)/.test(raw)) {
+    id = 'geran5';
+  } else if (compact === 'geran4' || /(?:герань|geran|shahed)[\s_-]*(?:4|iv)/.test(raw)) {
+    id = 'geran4';
+  } else if (compact === 'lancet3' || /ланцет[\s_-]*3/.test(raw) || /lancet[\s_-]*3/.test(raw)) {
+    id = 'lancet3';
+  } else if (compact === 'lancet1' || compact === 'lancet' || /ланцет/.test(raw) || /lancet/.test(raw)) {
+    id = 'lancet1';
+  } else if (compact === 'shahed' || compact === 'geran2' || compact === 'geran_2' ||
+             /(?:герань|geran)[\s_-]*2/.test(raw) || raw === 'shahed') {
+    id = 'geran2';
+  } else if (compact === 'fpv' || /\bfpv\b/.test(raw)) {
+    id = 'geran2';
+  } else if (compact === 'orlan' || /orlan|орлан|recon/.test(raw)) {
+    id = 'orlan';
+  } else if (/баллист|ballistic|искандер|iskander/.test(raw)) {
+    id = 'ballistic';
+  } else if (/орешник|oreshnik/.test(raw)) {
+    id = 'oreshnik';
+  } else if (/кинжал|kinzhal/.test(raw)) {
+    id = 'kinzhal';
+  } else if (DIMAP_TYPE_MAP[raw] || DIMAP_TYPE_MAP[compact]) {
+    id = DIMAP_TYPE_MAP[raw] || DIMAP_TYPE_MAP[compact];
+  } else {
+    id = DIMAP_UNKNOWN_ID;
+  }
+  const fallback = { molniya: 'orlan', lancet1: 'lancet3' };
+  let tpl = SPAWN_TEMPLATES.find(function (t) { return t.id === id; });
+  if (!tpl && fallback[id]) tpl = SPAWN_TEMPLATES.find(function (t) { return t.id === fallback[id]; });
+  if (!tpl) tpl = SPAWN_TEMPLATES.find(function (t) { return t.id === 'geran2'; });
+  return tpl || SPAWN_TEMPLATES[0];
+}
+
+function dimapSetStatus(txt, ok) {
+  if (!dimapStatusEl) return;
+  dimapStatusEl.textContent = txt;
+  dimapStatusEl.style.color = ok === true ? '#38d46c' : (ok === false ? '#e55' : '#888');
+}
+
+function destroyDimapObject(obj) {
+  destroyAviacontrolObject(obj);
+}
+
+function createDimapObject(t, tpl) {
+  if (!tpl) return null;
+  const lat = Number(t.lat), lng = Number(t.lng);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  const latlng = L.latLng(lat, lng);
+  const bearing = Number(t.bearing) || 0;
+  const speedKmh = Number(t.speed) || tpl.realSpeed || 180;
+  const obj = {
+    marker: L.marker(latlng, {
+      icon: createObjectIconByTemplate(tpl, bearing, false),
+      interactive: true,
+      className: 'simulation-marker-layer dimap-live'
+    }).addTo(map),
+    nameMarker: null, detailMarker: null, hitboxMarker: null,
+    targetLabel: null, targetLabel2: null,
+    pathPoints: [], pathLine: null, pathDots: [],
+    running: false, index: 0, distances: null,
+    travelDistance: 0, lastFrameTime: null,
+    angle: bearing, targetAngle: bearing, mirrored: false,
+    template: tpl, animFrame: null,
+    fromDimap: true,
+    fromAviacontrol: false,
+    isLive: true,
+    isApiTarget: true,
+    dimapId: t.id,
+    aviacontrolName: t.name || t.label || ('dimap_' + t.id),
+    pp2Speed: Math.max(1, Math.round(speedKmh / 2.7)),
+    realSpeedKmh: speedKmh,
+    // плавное движение как у dimap-фиксаций
+    _seg: null,
+    serverPos: [lat, lng],
+    targetPos: [lat, lng],
+    renderPos: [lat, lng]
+  };
+  shaheds.push(obj);
+  try {
+    if (typeof makeTargetBlockLabel2 === 'function') {
+      const label = makeTargetBlockLabel2(latlng, obj);
+      if (label) { obj.targetLabel2 = label; label.addTo(map); }
+    } else if (typeof updateAllLabels === 'function') {
+      updateAllLabels();
+    }
+  } catch (e) {}
+  return obj;
+}
+
+function updateDimapObject(obj, t) {
+  if (!obj || !obj.marker) return;
+  const lat = Number(t.lat), lng = Number(t.lng);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+  const latlng = L.latLng(lat, lng);
+  const bearing = Number(t.bearing);
+  const speedKmh = Number(t.speed);
+  try { obj.marker.setLatLng(latlng); } catch (e) {}
+  if (Number.isFinite(bearing)) {
+    obj.angle = bearing;
+    obj.targetAngle = bearing;
+    try {
+      if (obj.template && typeof createObjectIconByTemplate === 'function') {
+        obj.marker.setIcon(createObjectIconByTemplate(obj.template, bearing, !!obj.mirrored));
+      }
+    } catch (e) {}
+  }
+  if (speedKmh > 0) {
+    obj.realSpeedKmh = speedKmh;
+    obj.pp2Speed = Math.max(1, Math.round(speedKmh / 2.7));
+  }
+  if (obj.targetLabel2) {
+    try { obj.targetLabel2.setLatLng(latlng); } catch (e) {}
+  }
+  obj.serverPos = [lat, lng];
+  obj.targetPos = [lat, lng];
+  obj.renderPos = [lat, lng];
+}
+
+function applyDimapPayload(data) {
+  if (!data || !data.ok || !Array.isArray(data.targets)) throw new Error('bad payload');
+  const seen = new Set();
+  for (const t of data.targets) {
+    if (!t || t.id == null) continue;
+    if (!Number.isFinite(Number(t.lat)) || !Number.isFinite(Number(t.lng))) continue;
+    const id = String(t.id);
+    seen.add(id);
+    const tpl = dimapTemplateFor(t.type);
+    let obj = dimapById.get(id);
+    if (obj && (!obj.marker || (shaheds.indexOf(obj) < 0 && objects.indexOf(obj) < 0))) {
+      dimapById.delete(id);
+      obj = null;
+    }
+    if (!obj) {
+      obj = createDimapObject(t, tpl);
+      if (obj) dimapById.set(id, obj);
+    } else {
+      updateDimapObject(obj, t);
+    }
+  }
+  for (const [id, obj] of dimapById) {
+    if (!seen.has(id)) {
+      destroyDimapObject(obj);
+      dimapById.delete(id);
+    }
+  }
+  const ts = new Date().toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  dimapSetStatus(seen.size + ' цел. · ' + ts, true);
+}
+
+async function fetchDimapTargets() {
+  if (dimapFetching || !settings.dimapLive) return;
+  dimapFetching = true;
+  try {
+    let data;
+    if (window.AndroidBridge && typeof window.AndroidBridge.httpGet === 'function') {
+      const raw = window.AndroidBridge.httpGet(DIMAP_URL);
+      if (!raw || String(raw).indexOf('__ERR__') === 0) throw new Error(raw || 'bridge empty');
+      data = JSON.parse(raw);
+    } else {
+      const res = await fetch(DIMAP_URL, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      data = await res.json();
+    }
+    applyDimapPayload(data);
+  } catch (err) {
+    console.warn('dimap feed:', err);
+    dimapSetStatus('ошибка: ' + (err && err.message ? err.message : err), false);
+  } finally {
+    dimapFetching = false;
+  }
+}
+
+function startDimapFeed() {
+  stopDimapFeed(false);
+  dimapSetStatus('загрузка…', null);
+  fetchDimapTargets();
+  dimapTimer = setInterval(fetchDimapTargets, DIMAP_POLL_MS);
+}
+
+function stopDimapFeed(clearObjects = true) {
+  if (dimapTimer) { clearInterval(dimapTimer); dimapTimer = null; }
+  if (clearObjects) {
+    for (const [, obj] of dimapById) destroyDimapObject(obj);
+    dimapById.clear();
+    dimapSetStatus('выкл', null);
+  }
+}
+
+
 
 // Значения по умолчанию для песочницы «Віраж-ППО».
 // Отображаем активные тумблеры и запускаем получение игровых live-целей.
@@ -5126,6 +5399,8 @@ toggleTargetBlock.classList.toggle('on', settings.showTargetBlock);
 toggleTargetBlock2.classList.toggle('on', settings.showTargetBlock2);
 toggleAviacontrol.classList.toggle('on', settings.aviacontrolLive);
 if (settings.aviacontrolLive) startAviacontrolFeed();
+if (toggleDimap) toggleDimap.classList.toggle('on', !!settings.dimapLive);
+if (settings.dimapLive) startDimapFeed();
 
 
 </script>
